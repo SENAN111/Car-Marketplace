@@ -1,12 +1,11 @@
-
 spring:
   application:
     name: car-marketplace
 
   datasource:
     url: jdbc:postgresql://localhost:5432/car_marketplace
-    username: teacher_user
-    password: teacher123
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
 
   jpa:
     hibernate:
@@ -20,5 +19,5 @@ server:
   port: 8080
 
 jwt:
-  secret: ${JWT_SECRET:QmFzZTY0RW5jb2RlZFNlY3JldEtleUZvckNhck1hcmtldHBsYWNlMjAyNg==}
+  secret: ${JWT_SECRET}
   expiration: 86400000
