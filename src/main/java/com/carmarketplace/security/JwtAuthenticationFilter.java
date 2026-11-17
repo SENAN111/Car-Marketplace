@@ -45,6 +45,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
 
         String token = authHeader.substring(7);
+        System.out.println("AUTH HEADER: " + authHeader);
+        System.out.println("TOKEN: " + token);
 
         try {
             String email = jwtService.extractEmail(token);
@@ -77,6 +79,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         } catch (JwtException | IllegalArgumentException |
                  UsernameNotFoundException exception) {
 
+            exception.printStackTrace();
             SecurityContextHolder.clearContext();
         }
 

@@ -32,10 +32,16 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
 
+
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/cars/**").permitAll()
+                        .requestMatchers(org.springframework.http.HttpMethod.POST, "/api/cars/**").hasAnyRole("SELLER", "ADMIN")
+                        .requestMatchers(org.springframework.http.HttpMethod.PUT, "/api/cars/**").hasAnyRole("SELLER", "ADMIN")
+                        .requestMatchers(org.springframework.http.HttpMethod.DELETE, "/api/cars/**").hasAnyRole("SELLER", "ADMIN")
                         .anyRequest().authenticated()
                 )
+
 
                 .exceptionHandling(exception -> exception
                         .authenticationEntryPoint((request, response, authException) ->

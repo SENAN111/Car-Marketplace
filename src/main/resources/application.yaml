@@ -21,3 +21,8 @@ server:
 jwt:
   secret: ${JWT_SECRET}
   expiration: 86400000
+admin:
+  email: ${ADMIN_EMAIL}
+  password: ${ADMIN_PASSWORD}
+  first-name: Admin
+  last-name: System
