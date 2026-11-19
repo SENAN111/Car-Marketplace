@@ -3,7 +3,7 @@ package com.carmarketplace.security;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.io.Decoders;
-
+import java.util.List;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -24,14 +24,14 @@ public class JwtService {
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
-    public String generateToken(String email) {
+    public String generateToken(String email, List<String> roles) {
 
         Date now = new Date();
-
         Date expirationDate = new Date(now.getTime() + expiration);
 
         return Jwts.builder()
                 .subject(email)
+                .claim("roles", roles)
                 .issuedAt(now)
                 .expiration(expirationDate)
                 .signWith(getSigningKey())

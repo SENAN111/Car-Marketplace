@@ -39,20 +39,30 @@ public class UserService {
         return userRepository.existsByEmail(email);
     }
 
-    public User register(User user) {
+
+    public User register(User user, String selectedRole) {
 
         if (emailExists(user.getEmail())) {
             throw new EmailAlreadyExistsException("Email already exists");
         }
 
+        if (!selectedRole.equals("USER") && !selectedRole.equals("SELLER")) {
+            throw new IllegalArgumentException("Invalid role selection");
+        }
+
         user.setPassword(passwordEncoder.encode(user.getPassword()));
 
-        Role userRole = roleRepository.findByName(RoleName.ROLE_USER)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException("Default role not found"));
+        RoleName roleName = selectedRole.equals("SELLER")
+                ? RoleName.ROLE_SELLER
+                : RoleName.ROLE_USER;
 
-        user.setRoles(Set.of(userRole));
+        Role role = roleRepository.findByName(roleName)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("Role not found"));
+
+        user.setRoles(Set.of(role));
 
         return userRepository.save(user);
     }
+
 }

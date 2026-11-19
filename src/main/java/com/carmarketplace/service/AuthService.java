@@ -1,14 +1,12 @@
-
 package com.carmarketplace.service;
 
 import com.carmarketplace.dto.RegisterRequest;
 import com.carmarketplace.entity.User;
 import com.carmarketplace.repository.UserRepository;
 import com.carmarketplace.security.JwtService;
+import com.carmarketplace.common.exception.InvalidCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import com.carmarketplace.common.exception.ResourceNotFoundException;
-import com.carmarketplace.common.exception.InvalidCredentialsException;
 
 @Service
 public class AuthService {
@@ -39,7 +37,7 @@ public class AuthService {
         user.setEmail(request.getEmail());
         user.setPassword(request.getPassword());
 
-        return userService.register(user);
+        return userService.register(user, request.getRole());
     }
 
     public String login(String email, String password) {
@@ -52,6 +50,11 @@ public class AuthService {
             throw new InvalidCredentialsException("Invalid email or password");
         }
 
-        return jwtService.generateToken(user.getEmail());
+        return jwtService.generateToken(
+                user.getEmail(),
+                user.getRoles().stream()
+                        .map(role -> role.getName().name())
+                        .toList()
+        );
     }
 }

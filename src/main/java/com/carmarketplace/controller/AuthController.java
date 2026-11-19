@@ -33,7 +33,12 @@ public class AuthController {
     ) {
         User user = authService.register(request);
 
-        String token = jwtService.generateToken(user.getEmail());
+        String token = jwtService.generateToken(
+                user.getEmail(),
+                user.getRoles().stream()
+                        .map(role -> role.getName().name())
+                        .toList()
+        );
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)

@@ -7,6 +7,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -45,8 +46,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
 
         String token = authHeader.substring(7);
-        System.out.println("AUTH HEADER: " + authHeader);
-        System.out.println("TOKEN: " + token);
 
         try {
             String email = jwtService.extractEmail(token);
@@ -71,15 +70,23 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                                     .buildDetails(request)
                     );
 
-                    SecurityContextHolder.getContext()
-                            .setAuthentication(authentication);
+                    SecurityContext context =
+                            SecurityContextHolder.createEmptyContext();
+
+                    context.setAuthentication(authentication);
+
+                    SecurityContextHolder.setContext(context);
+                    System.out.println("AUTHENTICATION: " +
+                            SecurityContextHolder.getContext().getAuthentication());
+
+                    System.out.println("AUTHORITIES: " +
+                            SecurityContextHolder.getContext().getAuthentication().getAuthorities());
                 }
             }
 
         } catch (JwtException | IllegalArgumentException |
                  UsernameNotFoundException exception) {
 
-            exception.printStackTrace();
             SecurityContextHolder.clearContext();
         }
 
